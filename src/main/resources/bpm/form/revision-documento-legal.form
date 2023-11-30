@@ -1,0 +1,70 @@
+{
+  "components": [
+    {
+      "text": "<h3>Revisión del documento Departamento Legal</h3>",
+      "type": "text",
+      "id": "Field_1vjzowq"
+    },
+    {
+      "label": "Identificador único del contrato",
+      "type": "textfield",
+      "id": "Field_1ajaow5",
+      "key": "fileId",
+      "description": "Identificador del archivo en el repositorio de Alfresco",
+      "disabled": true,
+      "validate": {
+        "minLength": 37
+      }
+    },
+    {
+      "label": "Aprobar el contrato",
+      "type": "checkbox",
+      "id": "Field_1em98sx",
+      "key": "approved_legal",
+      "description": "En caso de ser aprobado se almacena el contrato en el expediente"
+    },
+    {
+      "label": "Requiere de modificaciones menores",
+      "type": "checkbox",
+      "id": "Field_1iskg1v",
+      "key": "previo_legal",
+      "description": "El contrato se almacena en el expediente pero como un 'CONTRATO_PREVIO'."
+    },
+    {
+      "label": "Comentarios del área administrativa",
+      "type": "textfield",
+      "id": "Field_1vifhof",
+      "key": "comments_admin",
+      "disabled": true,
+      "properties": {
+        "subtype": "textArea",
+        "minHeight": "200px",
+        "maxHeight": "600px"
+      }
+    },
+    {
+      "label": "Comentarios",
+      "type": "textfield",
+      "id": "Field_0t8hwif",
+      "key": "comments_legal",
+      "properties": {
+        "subtype": "textArea",
+        "minHeight": "200px",
+        "maxHeight": "600px"
+      },
+      "validate": {
+        "maxLength": 400
+      },
+      "description": "Incluir comentarios de Legal"
+    }
+  ],
+  "type": "default",
+  "id": "revisiondocumentolegal",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.0.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.1.0"
+  },
+  "schemaVersion": 4
+}

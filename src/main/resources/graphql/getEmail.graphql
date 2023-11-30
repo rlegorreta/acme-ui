@@ -1,0 +1,9 @@
+query getEmail($id:ID, $uri: String) {
+  emails(_id:$id, uri: $uri) {
+    _id
+    uri
+    emails {
+          email
+    }
+  }
+}

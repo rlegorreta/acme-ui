@@ -1,0 +1,35 @@
+mutation upPersona($id: ID!,
+                   $nombre: String!,
+                   $apellidoPaterno: String!,
+                   $apellidoMaterno: String!,
+                   $fechaNacimiento: LocalDate,
+                   $genero: String,
+                   $estadoCivil: String,
+                   $usuarioModificacion: String!
+                   $fechaModificacion: LocalDateTime!
+                   $activo: Boolean!,
+                   $idPersona: Int,) {
+  updatePersona (_id: $id,
+                 nombre: $nombre,
+                 apellidoPaterno: $apellidoPaterno,
+                 apellidoMaterno: $apellidoMaterno,
+                 fechaNacimiento: $fechaNacimiento,
+                 genero: $genero,
+                 estadoCivil: $estadoCivil,
+                 usuarioModificacion:$usuarioModificacion,
+                 fechaModificacion:$fechaModificacion,
+                 activo: $activo,
+                 idPersona: $idPersona) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+	}
+}

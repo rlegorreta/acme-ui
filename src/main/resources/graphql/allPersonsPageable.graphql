@@ -1,0 +1,60 @@
+query allPersonas($apellidoPaterno: String, $activo: Boolean, $limit: Int, $skip: Int) {
+      personae(apellidoPaterno_contains:$apellidoPaterno, activo:$activo, options:{limit:$limit, skip:$skip}) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+            trabaja {
+                    to {
+                            _id
+                            nombre
+                        }
+                    puesto
+                    }
+            dirige {
+                    to {
+                            _id
+                           nombre
+                        }
+                    idCompania
+                    nombreCompania
+                    }
+            relaciones {
+                    to {
+                        _id
+                        nombre
+                        apellidoPaterno
+                        apellidoMaterno
+                    }
+                    tipo
+                    nombre
+                  }
+            telefonos {
+                      _id
+                      numero
+                      ciudad
+                      tipo
+                  }
+
+            emails {
+                    to {
+                            _id
+                            uri
+                        }
+                    email
+                    }
+            direcciones {
+                    _id
+                    calle
+                    ciudad
+                    tipo
+                }
+      }
+}

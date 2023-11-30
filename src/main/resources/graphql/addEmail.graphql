@@ -1,0 +1,6 @@
+mutation newEmail($uri: String!) {
+    createEmail (uri: $uri) {
+        _id
+        uri
+	}
+}

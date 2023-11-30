@@ -1,0 +1,3 @@
+query allPersonasCount($apellidoPaterno: String, $activo: Boolean) {
+      personasCount(apellidoPaterno: $apellidoPaterno, activo: $activo)
+}

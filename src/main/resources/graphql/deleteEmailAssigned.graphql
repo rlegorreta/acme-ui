@@ -1,0 +1,15 @@
+mutation delEmailAsignado($id: ID!, $emailDel: ID!) {
+    deletePersonaEmailDel (_id: $id, emailDel:$emailDel) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+	}
+}

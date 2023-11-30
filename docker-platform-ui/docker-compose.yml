@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+    sysui:
+      image: "ailegorreta/acme-ui"
+      container_name: acme-ui
+      ports:
+        - "8540:8540"
+      deploy:
+        resources:
+          limits:
+            memory: 896m
+      networks:
+        - ailegorretaNet
+      environment:
+        - JAVA_OPTIONS="-Xms512m -Xmx512m"
+        - SPRING_CLOUD_CONFIG_URI=http://config-service:8071
+        - SPRING_PROFILES_ACTIVE=local
+        - MICROSERVICE_CACHE_PROVIDER_URI=http://gateway-service:8072/ailegorreta/cache-service  # no gateway will be http://cache-service:8351
+        - MICROSERVICE_AUDIT_PROVIDER_URI=http://gateway-service:8072/ailegorreta/audit-service  # no gateway will be http://audit-service:8300
+        - MICROSERVICE_AUDIT_SUBSCRIPTION_HOST=audit-service                         # note: we do not use the gateway
+        - MICROSERVICE_BUP_PROVIDER_URI=http://gateway-service:8072/ailegorreta/bup-service          # no gateway will be http://bup-service:8520
+        - MICROSERVICE_EXPEDIENTE_PROVIDER_URI=http://gateway-service:8072/ailegorreta/expediente-service # no gateway will be http://expediente-service:8525
+        - MICROSERVICE_ORDER_PROVIDER_URI=http://gateway-service:8072/ailegorreta/order-service  # no gateway will be http://order-service:8530
+        - ALFRESCO_URL=http://host.docker.internal:8080/alfresco/api/-default-/cmis/versions/1.1/atom
+        - ALFRESCO_USERNAME=admin
+        - ALFRESCO_PASSWORD=admin
+        - ALFRESCO_COMPANY=ACME
+        - CAMUNDA_TASKLIST_URL=http://host.docker.internal:8082
+        - CAMUNDA_TASKLIST_USERNAME=demo
+        - CAMUNDA_TASKLIST_PASSWORD=demo
+        - ZEEBE_CLIENT_BROKER_GATEWAY-ADDRESS=host.docker.internal:26500
+
+networks:
+  ailegorretaNet:
+    external: true

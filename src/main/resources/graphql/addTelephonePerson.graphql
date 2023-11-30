@@ -1,0 +1,8 @@
+mutation($id: ID!, $persona:ID!) {
+  addTelefonoPersona(_id:$id, persona:$persona) {
+    _id
+    numero
+    ciudad
+    tipo
+  }
+}

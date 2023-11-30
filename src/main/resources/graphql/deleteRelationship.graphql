@@ -1,0 +1,15 @@
+mutation delRelacion($id: ID!, $relacionDel: ID!) {
+    deletePersonaRelacionDel (_id: $id, relacionDel:$relacionDel) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+	}
+}

@@ -1,0 +1,8 @@
+mutation($id: ID!, $municipio:ID!) {
+  deleteDireccionMunicipio(_id:$id, municipio:$municipio) {
+    _id
+    calle
+    ciudad
+    tipo
+  }
+}

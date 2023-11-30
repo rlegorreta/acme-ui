@@ -1,0 +1,5 @@
+mutation newProveedor($from: ID!, $tipo: String!, $to: ID!) {
+    createProveedor (from__id: $from, tipo: $tipo, to__id:$to) {
+        tipo
+	}
+}

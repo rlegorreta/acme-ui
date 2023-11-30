@@ -1,0 +1,8 @@
+mutation newAddress($calle: String!, $ciudad: String, $tipo: String!) {
+    createDireccion (calle: $calle, ciudad:$ciudad, tipo: $tipo) {
+        _id
+        calle
+        ciudad
+        tipo
+	}
+}

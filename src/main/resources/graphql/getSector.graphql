@@ -1,0 +1,12 @@
+query getSector($id:ID, $nombre: String) {
+  sectors(_id:$id, nombre: $nombre) {
+    _id
+    nombre
+    usuarioModificacion
+    fechaModificacion
+    companias {
+      _id
+      nombre
+    }
+  }
+}

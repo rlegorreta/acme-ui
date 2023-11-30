@@ -1,0 +1,6 @@
+mutation($id: ID!, $estado:ID!) {
+  addCodigoEstado(_id:$id, estado:$estado) {
+    _id
+    cp
+  }
+}

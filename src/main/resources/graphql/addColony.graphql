@@ -1,0 +1,6 @@
+mutation newMunicipio($nombre: String!) {
+    createMunicipio (nombre: $nombre) {
+        _id
+        nombre
+	}
+}

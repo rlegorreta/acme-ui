@@ -1,0 +1,10 @@
+query getArea($id:ID, $nombre: String) {
+  areas(_id:$id, nombre: $nombre) {
+    _id
+    nombre
+    companias {
+      _id
+      nombre
+    }
+  }
+}

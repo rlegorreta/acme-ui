@@ -1,0 +1,47 @@
+query getCompany($id:ID, $nombre: String) {
+  companias(_id:$id, nombre: $nombre) {
+    _id
+    nombre
+    usuarioModificacion
+    fechaModificacion
+    sector {
+      _id
+      nombre
+    }
+    areas {
+      _id
+      nombre
+    }
+    telefonos {
+              _id
+              numero
+              ciudad
+              tipo
+          }
+    direcciones {
+              _id
+              calle
+              ciudad
+              tipo
+              codigo {
+                _id
+                cp
+              }
+              municipio {
+                _id
+                nombre
+              }
+              }
+    subsidiarias {
+              _id
+              nombre
+    }
+    proveedores {
+             tipo
+             to {
+                _id
+                nombre
+             }
+        }
+  }
+}

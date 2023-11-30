@@ -1,0 +1,8 @@
+{
+  sectors {
+    _id
+    nombre
+    usuarioModificacion
+    fechaModificacion
+  }
+}

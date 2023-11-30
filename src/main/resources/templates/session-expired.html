@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head>
+        <title>Session expired</title>
+    </head>
+    <body>
+        <h2>La sesión de trabajo se ha terminado por falta de uso del sistema.</h2>
+        <p>
+            Teclee <a th:href="@{/}">aqui</a> sis se requiere regresar a la aplicación. Si aún se tiene activa la sesión
+            en el servidor (SSO session) entonces aún se puede regresar a la aplicación sin en panel de entrada y
+            no se requiere al teclear el usuario y el password nuevamente. Por el otro caso, si ya se venció la
+            sesión en el servidor se preguntara nuevamente el usuario y el password.
+</p>
+</body>
+</html>

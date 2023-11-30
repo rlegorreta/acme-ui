@@ -1,0 +1,8 @@
+mutation delAddress($id: ID!) {
+  deleteDireccion (_id: $id) {
+        _id
+        calle
+        ciudad
+        tipo
+	}
+}

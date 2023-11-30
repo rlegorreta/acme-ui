@@ -1,0 +1,6 @@
+mutation($id: ID!, $codigo:ID!) {
+  addMunicipioCodigo(_id:$id, codigo:$codigo) {
+    _id
+    nombre
+  }
+}

@@ -1,0 +1,8 @@
+mutation($id: ID!, $municipio:ID!) {
+  addDireccionMunicipio(_id:$id, municipio:$municipio) {
+    _id
+    calle
+    ciudad
+    tipo
+  }
+}

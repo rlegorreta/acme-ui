@@ -1,0 +1,34 @@
+{
+  "components": [
+    {
+      "label": "Se aprueba el documento",
+      "type": "checkbox",
+      "id": "Field_0eb38wi",
+      "key": "approve"
+    },
+    {
+      "label": "Comentarios",
+      "type": "textfield",
+      "id": "Field_01gacat",
+      "key": "comments",
+      "description": "Inclir comentarios de la aprobación o negación del documento",
+      "validate": {
+        "maxLength": 150
+      },
+      "properties": {
+        "subtype": "textArea",
+        "minHeight": "200px",
+        "maxHeight": "300px"
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_105czum",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.0.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.17.0",
+  "schemaVersion": 4
+}

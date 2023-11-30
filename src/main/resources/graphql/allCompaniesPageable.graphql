@@ -1,0 +1,39 @@
+query allCompanies($nombre: String, $limit: Int, $skip: Int) {
+      companias(nombre_contains:$nombre, options:{limit:$limit, skip:$skip}) {
+            _id
+            nombre
+            usuarioModificacion
+            fechaModificacion
+            sector {
+                    _id
+                    nombre
+                    }
+            areas {
+                    _id
+                    nombre
+                  }
+            telefonos {
+                      _id
+                      numero
+                      ciudad
+                      tipo
+                  }
+            direcciones {
+                    _id
+                    calle
+                    ciudad
+                    tipo
+                }
+            subsidiarias {
+                    _id
+                    nombre
+            }
+            proveedores {
+                    tipo
+                    to {
+                        _id
+                        nombre
+                        }
+                    }
+      }
+}

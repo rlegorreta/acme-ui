@@ -1,0 +1,8 @@
+mutation delSector($id: ID!) {
+  deleteSector (_id: $id) {
+        _id
+        nombre
+        usuarioModificacion
+        fechaModificacion
+	}
+}

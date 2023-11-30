@@ -1,0 +1,6 @@
+mutation newCodigo($cp: Int!) {
+    createCodigo (cp: $cp) {
+        _id
+        cp
+	}
+}

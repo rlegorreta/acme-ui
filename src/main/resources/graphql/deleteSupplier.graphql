@@ -1,0 +1,8 @@
+mutation delProveedor($id: ID!, $proveedorDel: ID!) {
+    deleteCompaniaProveedorDel (_id: $id, proveedorDel:$proveedorDel) {
+            _id
+            nombre
+            usuarioModificacion
+            fechaModificacion
+	}
+}

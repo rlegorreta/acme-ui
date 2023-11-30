@@ -1,0 +1,12 @@
+mutation newCompania($nombre: String!,
+                     $usuarioModificacion: String!
+                     $fechaModificacion: LocalDateTime!) {
+    createCompania (nombre: $nombre,
+                    usuarioModificacion:$usuarioModificacion,
+                    fechaModificacion:$fechaModificacion) {
+        _id
+        nombre
+        usuarioModificacion
+        fechaModificacion
+	}
+}

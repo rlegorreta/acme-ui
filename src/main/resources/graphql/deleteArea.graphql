@@ -1,0 +1,6 @@
+mutation delArea($id: ID!) {
+  deleteArea (_id: $id) {
+        _id
+        nombre
+	}
+}

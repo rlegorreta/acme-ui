@@ -1,0 +1,8 @@
+mutation($id: ID!, $persona:ID!) {
+  addDireccionPersona(_id:$id, persona:$persona) {
+    _id
+    calle
+    ciudad
+    tipo
+  }
+}

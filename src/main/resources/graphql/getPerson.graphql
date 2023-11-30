@@ -1,0 +1,57 @@
+query getPerson($id:ID, $nombre: String, $apellidoPaterno: String, $apellidoMaterno:String) {
+    personae(_id:$id, nombre:$nombre, apellidoPaterno:$apellidoPaterno, apellidoMaterno:$apellidoMaterno) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+            trabaja {
+                    to {
+                            nombre
+                        }
+                    puesto
+                    }
+            dirige {
+                    to {
+                        nombre
+                        }
+                    idCompania
+                    nombreCompania
+                    }
+            relaciones {
+                    to {
+                        _id
+                        nombre
+                        apellidoPaterno
+                        apellidoMaterno
+                    }
+                    tipo
+                    nombre
+                  }
+            telefonos {
+                      _id
+                      numero
+                      ciudad
+                      tipo
+                  }
+            emails {
+                    to {
+                            _id
+                            uri
+                        }
+                    email
+                    }
+            direcciones {
+                    _id
+                    calle
+                    ciudad
+                    tipo
+                }
+      }
+}

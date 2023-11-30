@@ -1,0 +1,60 @@
+{
+  "components": [
+    {
+      "text": "<h3>Revisión del documento Area Administrativa</h3>",
+      "type": "text",
+      "id": "Field_1vjzowq"
+    },
+    {
+      "label": "Identificador único del archivo",
+      "type": "textfield",
+      "id": "Field_1ajaow5",
+      "key": "fileId",
+      "description": "Identificador del archivo en el repositorio de documento",
+      "disabled": true,
+      "validate": {
+        "minLength": 35
+      }
+    },
+    {
+      "label": "Tipo de documento",
+      "type": "textfield",
+      "id": "Field_0j5pema",
+      "key": "tipoDocumento",
+      "disabled": true,
+      "validate": {
+        "minLength": 15
+      }
+    },
+    {
+      "label": "Aprobar documento",
+      "type": "checkbox",
+      "id": "Field_1em98sx",
+      "key": "approved_admin",
+      "description": "En cuyo caso se almacena en el expediente"
+    },
+    {
+      "label": "Comentarios",
+      "type": "textfield",
+      "id": "Field_0t8hwif",
+      "key": "comments_admin",
+      "properties": {
+        "subtype": "textArea",
+        "minHeight": "200px",
+        "maxHeight": "600px"
+      },
+      "validate": {
+        "maxLength": 400
+      }
+    }
+  ],
+  "type": "default",
+  "id": "revisiondocumentoadministracion",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.0.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.5.1"
+  },
+  "schemaVersion": 5
+}

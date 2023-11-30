@@ -1,0 +1,9 @@
+query todayNotifications($username: String) {
+    notifications(username: $username) {
+        username
+        title
+        message
+        time
+    }
+}
+

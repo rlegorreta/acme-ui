@@ -1,0 +1,14 @@
+mutation upSector($id: ID!,
+                  $nombre: String!,
+                  $usuarioModificacion: String!
+                  $fechaModificacion: LocalDateTime!) {
+  updateSector (_id: $id,
+                nombre: $nombre,
+                usuarioModificacion:$usuarioModificacion,
+                fechaModificacion:$fechaModificacion) {
+        _id
+        nombre
+        usuarioModificacion
+        fechaModificacion
+	}
+}

@@ -1,0 +1,6 @@
+mutation($id: ID!, $sector:ID!) {
+  deleteCompaniaSector(_id:$id, sector:$sector) {
+    _id
+    nombre
+  }
+}

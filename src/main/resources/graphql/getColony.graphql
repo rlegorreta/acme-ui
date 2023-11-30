@@ -1,0 +1,14 @@
+query getMunicipio($id:ID, $nombre: String) {
+  municipios(_id:$id, nombre: $nombre) {
+    _id
+    nombre
+    codigos {
+      _id
+      cp
+      estado {
+        nombre
+        pais
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+mutation newEmailAsignado($from: ID!, $to: ID!, $email: String!) {
+    createEmailAsignado (from__id: $from, to__id:$to, email: $email) {
+        email
+	}
+}

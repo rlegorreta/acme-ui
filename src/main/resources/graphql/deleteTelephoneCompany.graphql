@@ -1,0 +1,8 @@
+mutation($id: ID!, $compania:ID!) {
+  deleteTelefonoCompania(_id:$id, compania:$compania) {
+    _id
+    numero
+    ciudad
+    tipo
+  }
+}

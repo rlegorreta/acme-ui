@@ -1,0 +1,6 @@
+mutation newDirige($from: ID!, $idCompania: Int!, $nombreCompania: String!, $to: ID!) {
+    createDirige (from__id: $from, idCompania:$idCompania, nombreCompania: $nombreCompania, to__id:$to) {
+        idCompania
+        nombreCompania
+	}
+}

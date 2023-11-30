@@ -1,0 +1,11 @@
+query getCodigo($id:ID, $cp: Int) {
+  codigoes(_id:$id, cp: $cp) {
+    _id
+    cp
+    estado {
+      _id
+      nombre
+      pais
+    }
+  }
+}

@@ -1,0 +1,12 @@
+mutation newSector($nombre: String!,
+                   $usuarioModificacion: String!
+                   $fechaModificacion: LocalDateTime!) {
+  createSector (nombre: $nombre,
+               usuarioModificacion:$usuarioModificacion,
+               fechaModificacion:$fechaModificacion) {
+        _id
+        nombre
+        usuarioModificacion
+        fechaModificacion
+	}
+}

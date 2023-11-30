@@ -1,0 +1,6 @@
+mutation($id: ID!, $subsidiaria:ID!) {
+  addCompaniaSubsidiaria (_id:$id, subsidiaria:$subsidiaria) {
+    _id
+    nombre
+  }
+}

@@ -1,0 +1,8 @@
+mutation delTelephone($id: ID!) {
+  deleteTelefono (_id: $id) {
+        _id
+        numero
+        ciudad
+        tipo
+	}
+}

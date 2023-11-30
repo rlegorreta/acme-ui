@@ -1,0 +1,6 @@
+mutation delEmail($id: ID!) {
+    deleteEmail (_id: $id) {
+        _id
+        uri
+	}
+}

@@ -1,0 +1,7 @@
+{
+  estadoes {
+    _id
+    nombre
+    pais
+  }
+}

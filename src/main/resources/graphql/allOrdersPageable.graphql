@@ -1,0 +1,10 @@
+query allOrders($limit: Int, $skip: Int) {
+      orders(options:{limit:$limit, skip:$skip}) {
+            _id
+            fechaOperacion
+            tiendaID
+            productoID
+            cantidad
+            monto
+      }
+}

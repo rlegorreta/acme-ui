@@ -1,0 +1,6 @@
+mutation($id: ID!, $compania:ID!) {
+  deleteAreaCompania(_id:$id, compania:$compania) {
+    _id
+    nombre
+  }
+}

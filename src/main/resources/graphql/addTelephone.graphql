@@ -1,0 +1,8 @@
+mutation newTelephone($numero: String!, $ciudad: String!, $tipo: String!) {
+    createTelefono (numero: $numero, ciudad: $ciudad, tipo:$tipo) {
+        _id
+        numero
+        ciudad
+        tipo
+	}
+}

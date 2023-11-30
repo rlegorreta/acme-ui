@@ -1,0 +1,212 @@
+server:
+  port: 8540
+  shutdown: graceful
+  netty:
+    connection-timeout: 2s
+    idle-timeout: 15s
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain,application/javascript,text/css
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    # Maintaining the Vaadin session timeout. Normally is 30m, for testing we reduce this time
+    session:
+      timeout: 30m
+  # These properties are to use Apps with HTTPS we need a certificate
+  # Always use SSL. In this case, we're using a self-signed certificate but in a real application we would of course use
+  # a proper certificate.
+  #ssl:
+  #  key-alias: selfsigned
+  #  key-store: file:/Users/petterwork/Vaadin/spring-security-webinar/keystore.p12
+  #  key-store-password: change it
+  #  enabled: true
+
+spring:
+  application:
+    name: acme-ui
+    version: 2.0.0
+  devtools:
+    restart:
+      enabled: false
+    add-properties: false
+  profiles:
+    active:
+      localNoDocker
+  main:
+    allow-bean-definition-overriding: false
+    web-application-type: servlet
+  config:
+    import: "optional:configserver:"  # Imports configuration data from a config server when available
+  cloud:
+    config:
+      uri: http://localhost:8071
+      request-connect-timeout: 5000   # Timeout on waiting to connect to the config server (ms)
+      request-read-timeout: 5000      # Timeout on waiting to read configuration data from the config server (ms)
+      fail-fast: true                 # In production, set to true. Makes a failure to connect to the config server fatal
+      retry:
+        max-attempts: 6
+        initial-interval: 1000        # Initial retry interval for backoff (ms)
+        max-interval: 2000            # Maximum retry interval for backoff (ms)
+        multiplier: 1.1               # Multiplier to compute the next interval
+    loadbalancer:
+      ribbon:
+        healthcheck:
+          path:
+            default: /
+        enabled: false
+        # ^ disables the default Netflix Ribbon-backed load balanced strategy in order to use new Spring Cloud Load Balancer
+    circuitbreaker:
+      resilience4j:
+        enabled: false
+    stream:
+      default:
+        producer:
+          useNativeEncoding: true
+        consumer:
+          useNativeDecoding: true
+      function:
+        definition: producer;producerBpm
+      kafka:
+        bindings:
+          producer-out-0:
+            producer:
+              configuration:
+                value.serializer: com.ailegorreta.commons.event.EventDTOSerializer
+          producerBpm-out-0:
+            producer:
+              configuration:
+                value.serializer: com.ailegorreta.commons.event.EventDTOSerializer
+      bindings:
+        producer-out-0:
+          destination: audit
+        producerBpm-out-0:
+          destination: audit
+  mustache:
+    check-template-location: false
+  thymeleaf:
+    cache: false
+  security:
+    oauth2:
+      client:
+        registration:
+          acme-ui-oidc:
+            provider: spring
+            client-id: acme-ui
+            client-secret: acme-ui-secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://acme-ui:8540/login/oauth2/code/{registrationId}"
+            scope: openid, acme.facultad
+            client-name: acme-ui-oidc
+          acme-ui-client-credentials:
+            provider: spring
+            client-id: acme-ui
+            client-secret: acme-ui-secret
+            authorization-grant-type: client_credentials
+            scope: acme.facultad
+            client-name: acme-ui-client-credentials
+        provider:
+          spring:
+            issuer-uri: http://auth-service:9000
+        rest:
+          client-id: acme-ui-oidc
+          # ^ this value must be the registered client-id to do rest calls, i.e., with client_credentials grant type
+      resourceserver:
+        jwt:
+          issuer-uri: http://auth-service:9000
+
+security:
+  clientId: acme-ui
+  iam:
+    load-balanced: false
+
+#Back-end microservices
+microservice:
+  bup:
+    provider-uri: http://localhost:8072/ailegorreta/bup-service        # use the gateway (or 'bup' url is ok)
+  expediente:
+    provider-uri: http://localhost:8072/ailegorreta/expediente-service # use the gateway (or 'expediente' url is ok)
+  order:
+    provider-uri: http://localhost:8072/ailegorreta/order-service      # use the gateway (or 'order' url is ok)
+  cache:
+    provider-uri: http://localhost:8072/ailegorreta/cache-service      # use the gateway (or 'cache' url is ok)
+  audit:
+    provider-uri: http://localhost:8072/ailegorreta/audit-service      # use the gateway (or 'audit' url is ok)
+    # provider-uri: http://localhost:8300                # do not use gateway
+    subscription:
+      host: localhost                                   # note: we do not use gateway
+      port: 8301
+  iam:
+    clientId: iam-service
+
+# Alfresco content management server
+alfresco:
+  url: http://localhost:8080/alfresco/api/-default-/cmis/versions/1.1/atom
+  # url: http://host.docker.internal:8080/alfresco/api/-default-/cmis/versions/1.1/atom
+  username: uname
+  password: password
+  company: ACME     # This is the parent folder for all files
+
+# Camunda BPM
+camunda:
+  tasklist:
+    url: http://localhost:8082
+    username: demo
+    password: demo
+#zeebe Camunda
+zeebe:
+  client:
+    broker:
+      gateway-address: localhost:26500
+    security:
+      plaintext: true
+
+vaadin:
+  launch-browser: true
+  # To improve the performance during development.
+  # For more information https://vaadin.com/docs/v14/flow/spring/tutorial-spring-configuration.html#special-configuration-parameters
+  # vaadin.whitelisted-packages= org/vaadin/example
+  pnpm:
+    enable: false
+  # Ensure application is run in Vaadin 24/npm mode
+  compatibilityMode: false
+  # To improve the performance during development.
+  # For more information https://vaadin.com/docs/flow/spring/tutorial-spring-configuration.html#special-configuration-parameters
+  # vaadin.whitelisted-packages= com/example/application
+  # vaadin.blacklisted-packages=nl/martijndwars,com/beust,org/apache.httpcomponents,org/asynchttpclient,org/bitbucket,org/bouncycastle
+  whitelisted-packages: com.vaadin,org.vaadin,dev.hilla,com.acme.acmeui,com.wontlost,org.vaadin.addons.visjs.network
+  # Reduce the heartbeat interval so that we get multiple ones before the session times out. Normally is 5 minutes
+  heartbeatInterval: 3600
+  # Don't let the heartbeat keep the sessions alive indefinitely
+  closeIdleSessions: true
+
+vapid:
+  # In order to obtain the private and public key pair for your server with npx web-push generate-vapid-keys
+  # Use the output to put these values in the next two keys
+  public:
+    key: BJ73ogFet8L2bIxRSacvX9cetYPxjZuo_mTh8qgzufK-18GCveZ7cx91oB3aUa4CHsUB3mXrlN2yDKnLd2mdrSI
+  private:
+    key: 19hu89ELJTSuhjT8bSWsdH-wYFxs3iAeSqqES9X9sEY
+
+logging:
+  level:
+    root: WARN
+    com:
+      netflix: WARN
+      acme:
+        client: WARN
+        acmeui: DEBUG
+      ailegorreta:
+        client:
+          rest: DEBUG
+      wontlost:
+        ckeditor: DEBUG
+    org:
+      atmosphere: WARN
+      springframework.web: WARN
+      vaadin:
+        addons:
+          visjs:
+            network: DEBUG
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'

@@ -1,0 +1,5 @@
+mutation newTrabaja($from: ID!, $puesto: String!, $to: ID!) {
+    createTrabaja (from__id: $from, puesto: $puesto, to__id:$to) {
+        puesto
+	}
+}

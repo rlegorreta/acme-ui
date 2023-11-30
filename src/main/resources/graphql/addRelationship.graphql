@@ -1,0 +1,6 @@
+mutation newRelacion($from: ID!, $tipo: String!, $nombre: String!, $to: ID!) {
+    createRelacion (from__id: $from, tipo: $tipo, nombre: $nombre, to__id:$to) {
+        tipo
+        nombre
+	}
+}

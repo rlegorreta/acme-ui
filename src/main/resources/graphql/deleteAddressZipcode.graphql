@@ -1,0 +1,8 @@
+mutation($id: ID!, $codigo:ID!) {
+  deleteDireccionCodigo(_id:$id, codigo:$codigo) {
+    _id
+    calle
+    ciudad
+    tipo
+  }
+}

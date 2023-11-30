@@ -1,0 +1,15 @@
+mutation delDirige($id: ID!, $dirigeDel: ID!) {
+    deletePersonaDirigeDel (_id: $id, dirigeDel:$dirigeDel) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+	}
+}

@@ -1,0 +1,16 @@
+query getTelephone($id:ID, $numero: String) {
+  telefonoes(_id:$id, numero: $numero) {
+    _id
+    numero
+    ciudad
+    tipo
+    companias {
+          _id
+          nombre
+    }
+    personas {
+           _id
+           nombre
+    }
+  }
+}

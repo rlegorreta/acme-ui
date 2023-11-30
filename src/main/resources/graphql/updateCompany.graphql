@@ -1,0 +1,14 @@
+mutation upCompania($id: ID!,
+                    $nombre: String!,
+                    $usuarioModificacion: String!
+                    $fechaModificacion: LocalDateTime!) {
+  updateCompania (_id: $id,
+                  nombre: $nombre,
+                  usuarioModificacion:$usuarioModificacion,
+                  fechaModificacion:$fechaModificacion) {
+        _id
+        nombre
+        usuarioModificacion
+        fechaModificacion
+	}
+}

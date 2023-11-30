@@ -1,0 +1,6 @@
+mutation newArea($nombre: String!) {
+    createArea (nombre: $nombre) {
+        _id
+        nombre
+	}
+}

@@ -1,0 +1,15 @@
+mutation delTrabaja($id: ID!, $trabajaDel: ID!) {
+    deletePersonaTrabajaDel (_id: $id, trabajaDel:$trabajaDel) {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+            fechaNacimiento
+            genero
+            estadoCivil
+            usuarioModificacion
+            fechaModificacion
+            activo
+            idPersona
+	}
+}
