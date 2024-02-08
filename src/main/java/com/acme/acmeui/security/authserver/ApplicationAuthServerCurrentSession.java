@@ -26,7 +26,7 @@ import com.ailegorreta.client.security.authserver.AuthServerCurrentSession;
 import org.springframework.stereotype.Component;
 
 /**
- * Use lmass-client-security library and declare the class as subclass with the
+ * Use ailegorreta-kit-client-security library and declare the class as subclass with the
  * @Component notation
  *
  * @project acme-ui

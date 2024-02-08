@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, LegoSoft Soluciones, S.C.
+/* Copyright (c) 2024, LegoSoft Soluciones, S.C.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  *
  *  Compania.kt
  *
- *  Developed 2023 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
+ *  Developed 2024 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
  */
 package com.acme.acmeui.data.dto
 
@@ -30,14 +30,18 @@ import java.time.LocalDateTime
  *
  * @project acme-ui
  * @author rlh
- * @date November 2023
+ * @date February 2024
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Compania(var _id: String?,
                     var nombre: String,
                     var usuarioModificacion: String? = null,
                     var fechaModificacion: LocalDateTime? = null,
+                    val idPersona: Int = 0,
+                    val activo: Boolean = true,
+                    val padre: Boolean = true,
                     var sector: Sector?,
+                    var rfc: Rfc = Rfc(),
                     var areas:Collection<Area>? = null,
                     var telefonos:Collection<Telefono>? = null,
                     var direcciones:Collection<Direccion>? = null,
@@ -82,6 +86,16 @@ data class GraphqlResponseAddCompaniaSector(val data: Data? = null,
 data class GraphqlResponseDeleteCompaniaSector(val data: Data? = null,
                                                val errors: Collection<Map<String, Any>>? = null) {
     data class Data(val deleteCompaniaSector: Compania)
+}
+
+/** Compania -> Rfc */
+data class GraphqlResponseAddCompaniaRfc(val data: Data? = null,
+                                         val errors: Collection<Map<String, Any>>? = null) {
+    data class Data(val addCompaniaRfc: Compania)
+}
+data class GraphqlResponseDeleteCompaniaRfc(val data: Data? = null,
+                                            val errors: Collection<Map<String, Any>>? = null) {
+    data class Data(val deleteCompaniaRfc: Compania)
 }
 
 /** Compania -> Compania (subsidiaria) */

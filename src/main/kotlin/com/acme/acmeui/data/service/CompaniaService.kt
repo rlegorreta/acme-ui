@@ -48,16 +48,16 @@ import java.time.format.DateTimeFormatter
  *
  * @project acme-ui
  * @author rlh
- * @date November 2023
+ * @date February 2024
  */
 @Service
 class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
                       private val areaService: AreaService,
                       private val telefonoService: TelefonoService,
                       private val direccionService: DireccionService,
+                      private val rfcService: RfcService,
                       private val eventService: EventService,
-                      private val serviceConfig: ServiceConfig
-): HasLogger {
+                      private val serviceConfig: ServiceConfig): HasLogger {
     fun uri(): UriComponentsBuilder = UriComponentsBuilder.fromUriString(serviceConfig.getBupProvider())
 
     fun allCompanies(nombre: String?, page: Int, size: Int): Page<Compania>? {
@@ -145,7 +145,10 @@ class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
         val graphQLRequestBody = GraphqlRequestBody(GraphqlSchemaReaderUtil.getSchemaFromFileName("addCompany"),
                                     mutableMapOf("nombre" to company.nombre,
                                                  "usuarioModificacion" to company.usuarioModificacion!!,
-                                                 "fechaModificacion" to company.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME)))
+                                                 "fechaModificacion" to company.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME),
+                                                 "padre" to company.padre,
+                                                 "activo" to company.activo,
+                                                 "idPersona" to company.idPersona))
         val res = webClient.post()
                             .uri(uri().path("/bup/graphql").build().toUri())
                             .accept(MediaType.APPLICATION_JSON)
@@ -174,6 +177,17 @@ class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
                 addCompanySector(res.body!!.data!!.createCompania._id!!, company.sector!!._id!!)
             } catch (e : Exception) {
                 logger.error("No se pudo dar de alta el sector para la compañía ${company.nombre}: ${e.message}")
+                return null
+            }
+        // Rfc 1:1
+        if (company.rfc.rfc != null)
+            try {
+                val newRfc = rfcService.addRfcIfNotExists(company.rfc)
+
+                if (newRfc != null)
+                    addCompanyRfc(res.body!!.data!!.createCompania._id!!, newRfc.idNeo4j!!)
+            } catch (e : Exception) {
+                logger.error("No se pudo dar de alta el rfc para la compañía ${company.nombre}: ${e.message}")
                 return null
             }
         // Areas 1:m
@@ -245,7 +259,10 @@ class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
                                                 mutableMapOf("id" to company.idNeo4j,
                                                              "nombre" to company.nombre,
                                                              "usuarioModificacion" to company.usuarioModificacion!!,
-                                                             "fechaModificacion" to company.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME)))
+                                                             "fechaModificacion" to company.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME),
+                                                             "padre" to company.padre,
+                                                             "activo" to company.activo,
+                                                             "idPersona" to company.idPersona))
         val res = webClient.post()
                             .uri(uri().path("/bup/graphql").build().toUri())
                             .accept(MediaType.APPLICATION_JSON)
@@ -276,6 +293,24 @@ class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
                     addCompanySector(company.idNeo4j!!, company.sector!!._id!!)
             } catch (e: Exception) {
                 logger.error("No se pudo actualizar la relación con el sector. ")
+                return null
+            }
+        // Check CompaniaRfc relationship
+        if (!((oldCompany.rfc.rfc != null) && (company.rfc.rfc != null) &&
+              (oldCompany.rfc.idNeo4j == company.rfc.idNeo4j)))
+            try {
+                if (oldCompany.rfc.rfc != null) {
+                    deleteCompanyRfc(oldCompany.idNeo4j!!, oldCompany.rfc.idNeo4j!!)
+                    rfcService.deleteRfcIfNotNeeded(oldCompany.rfc.idNeo4j!!)
+                }
+                if (company.rfc.rfc != null) {
+                    val newRfc = rfcService.addRfcIfNotExists(company.rfc)
+
+                    if (newRfc != null)
+                        addCompanyRfc(company.idNeo4j!!, newRfc.idNeo4j!!)
+                }
+            } catch (e: Exception) {
+                logger.error("No se pudo actualizar la relación con el rfc. ")
                 return null
             }
         // Check CompaniaArea relationship
@@ -430,6 +465,67 @@ class CompaniaService(@Qualifier("authorization_code") val webClient: WebClient,
         return res.body!!.data!!.deleteCompaniaSector
     }
 
+    /**
+     * Company rfc relationship maintenance
+     */
+    private fun addCompanyRfc(idCompany: String, idRfc: String): Compania {
+        val graphQLRequestBody = GraphqlRequestBody(GraphqlSchemaReaderUtil.getSchemaFromFileName("addCompanyRfc"),
+                                                mutableMapOf("id" to idCompany,
+                                                             "rfc" to idRfc))
+        val res = webClient.post()
+                            .uri(uri().path("/bup/graphql").build().toUri())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(graphQLRequestBody), GraphqlRequestBody::class.java)
+                            .attributes(clientRegistrationId(serviceConfig.securityClientId + "-oidc"))
+                            .retrieve()
+                            .toEntity(GraphqlResponseAddCompaniaRfc::class.java)
+                            .block()
+
+        if ((res == null) || (res.body!!.errors != null)) {
+            logger.error("Error al añadir la relación compañía rfc:" + (res?.body?.errors ?: ""))
+            val graphQLError = EventGraphqlError(res?.body?.errors, mutableMapOf("idCompany" to idCompany))
+
+            graphQLError.addExtraData("idRfc", idRfc)
+            eventService.sendEvent(eventType = EventType.ERROR_EVENT,
+                                    headers = res!!.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+                                    eventName = "ERROR:ASIGNACION_RFC_COMPAÑIA", value = graphQLError)
+            throw Exception("Error al añadir la relación compañía rfc")
+        }
+        eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+            eventName = "ASIGNACION_RFC_COMPAÑIA", value = res.body!!.data!!.addCompaniaRfc)
+
+        return res.body!!.data!!.addCompaniaRfc
+    }
+
+    private fun deleteCompanyRfc(idCompany: String, idRfc: String): Compania {
+        val graphQLRequestBody = GraphqlRequestBody(GraphqlSchemaReaderUtil.getSchemaFromFileName("deleteCompanyRfc"),
+                                                            mutableMapOf("id" to idCompany,
+                                                                         "rfc" to idRfc))
+        val res = webClient.post()
+                            .uri(uri().path("/bup/graphql").build().toUri())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(graphQLRequestBody), GraphqlRequestBody::class.java)
+                            .attributes(clientRegistrationId(serviceConfig.securityClientId + "-oidc"))
+                            .retrieve()
+                            .toEntity(GraphqlResponseDeleteCompaniaRfc::class.java)
+                            .block()
+
+        if ((res == null) || (res.body!!.errors != null)) {
+            logger.error("Error borrar la relación rfc compañía:" + (res?.body?.errors ?: ""))
+            val graphQLError = EventGraphqlError(res?.body?.errors, mutableMapOf("idCompany" to idCompany))
+
+            graphQLError.addExtraData("idRfc", idRfc)
+            eventService.sendEvent(eventType = EventType.ERROR_EVENT,
+                headers = res!!.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+                eventName = "ERROR:DES_ASIGNACION_RFC_COMPAÑIA", value = graphQLError)
+            throw Exception("Error al borrar la relación compañía rfc")
+        }
+        eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+                               eventName = "DES_ASIGNACION_RFC_COMPAÑIA", value = res.body!!.data!!.deleteCompaniaRfc)
+
+        return res.body!!.data!!.deleteCompaniaRfc
+    }
+    
     /**
      * Company vs company subsidiary relationships
      */

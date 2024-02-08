@@ -1,0 +1,8 @@
+mutation($id: ID!, $rfc:ID!) {
+    deletePersonaRfc(_id:$id, rfc:$rfc) {
+        _id
+        nombre
+        apellidoPaterno
+        apellidoMaterno
+    }
+}

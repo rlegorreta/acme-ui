@@ -7,6 +7,11 @@ query allPersonas($apellidoPaterno: String, $activo: Boolean, $limit: Int, $skip
             fechaNacimiento
             genero
             estadoCivil
+            curp
+            rfc {
+                _id
+                rfc
+            }
             usuarioModificacion
             fechaModificacion
             activo

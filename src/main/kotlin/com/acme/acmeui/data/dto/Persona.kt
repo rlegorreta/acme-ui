@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, LegoSoft Soluciones, S.C.
+/* Copyright (c) 2024, LegoSoft Soluciones, S.C.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,11 +18,12 @@
  *
  *  Persona.kt
  *
- *  Developed 2023 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
+ *  Developed 2024 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
  */
 package com.acme.acmeui.data.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import jakarta.validation.constraints.Size
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -31,7 +32,7 @@ import java.time.LocalDateTime
  *
  * @project ACME-UI
  * @author rlh
- * @date November 2022
+ * @date February 2024
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Persona(var _id: String?,
@@ -45,6 +46,9 @@ data class Persona(var _id: String?,
                    var fechaModificacion: LocalDateTime? = null,
                    var activo: Boolean,
                    var idPersona: Int? = null,
+                   @Size(min=16, max=16, message = "El CURP debe de tener 16 caracteres")
+                   var curp: String? = null,
+                   var rfc: Rfc = Rfc(),
                    var trabaja: Collection<Trabaja>? = null,
                    var dirige: Collection<Dirige>? = null,
                    var relaciones:Collection<Relacion>? = null,
@@ -110,6 +114,16 @@ data class GraphqlResponseAddPersonaArea(val data: Data? = null,
 data class GraphqlResponseDeletePersonaArea(val data: Data? = null,
                                             val errors: Collection<Map<String, Any>>? = null) {
     data class Data(val deletePersonaArea: Persona)
+}
+
+/** Persona -> Rfc */
+data class GraphqlResponseAddPersonaRfc(val data: Data? = null,
+                                        val errors: Collection<Map<String, Any>>? = null) {
+    data class Data(val addPersonaRfc: Persona)
+}
+data class GraphqlResponseDeletePersonaRfc(val data: Data? = null,
+                                            val errors: Collection<Map<String, Any>>? = null) {
+    data class Data(val deletePersonaRfc: Persona)
 }
 
 

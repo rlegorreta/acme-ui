@@ -72,10 +72,12 @@ spring:
           producer-out-0:
             producer:
               configuration:
+                key.serializer: org.apache.kafka.common.serialization.StringSerializer
                 value.serializer: com.ailegorreta.commons.event.EventDTOSerializer
           producerBpm-out-0:
             producer:
               configuration:
+                key.serializer: org.apache.kafka.common.serialization.StringSerializer
                 value.serializer: com.ailegorreta.commons.event.EventDTOSerializer
       bindings:
         producer-out-0:

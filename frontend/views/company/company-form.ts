@@ -71,6 +71,15 @@ export class CompanyForm extends View {
                 return { property: model.nombre };
             },
         });
+        this.binder.for(model.rfc.rfc).addValidator({
+            message: 'El RFC debe tener  13 caracteres',
+            validate: (rfc: string) => {
+                if (rfc.length === 13) {
+                    return true;
+                }
+                return { property: model.rfc };
+            },
+        });
 
         return html`
 
@@ -87,6 +96,23 @@ export class CompanyForm extends View {
                       .items=${sysStore.sectors}
                       ...=${field(model.sector)}
               ></vaadin-combo-box>
+              <vaadin-text-field
+                      label="RFC"
+                      ?disabled=${uiStore.offline}
+                      ...=${field(model.rfc.rfc)}
+              ></vaadin-text-field>
+              <vaadin-checkbox
+                      label='Estatus activo'
+                      ?disabled=${uiStore.offline}
+                      ...=${field(model.activo)}
+              ></vaadin-checkbox>
+              <vaadin-text-field
+                      label='Id único de compañía'
+                      ?disabled=${uiStore.offline}
+                      ...=${field(model.idPersona)}
+                      pattern="^\\d{6}$"
+                      help-text='Identificador para LDAP y otras aplicaciones.'
+              ></vaadin-text-field>
               <vaadin-accordion>
                   <vaadin-accordion-panel>
                       <div slot="summary"><span class="text-secondary text-s">Areas de la empresa</span></div>

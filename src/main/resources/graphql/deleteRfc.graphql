@@ -1,0 +1,6 @@
+mutation delRfc($id: ID!) {
+    deleteRfc (_id: $id) {
+        _id
+        rfc
+    }
+}

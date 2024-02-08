@@ -1,0 +1,6 @@
+mutation($id: ID!, $rfc:ID!) {
+    deleteCompaniaRfc(_id:$id, rfc:$rfc) {
+        _id
+        nombre
+    }
+}

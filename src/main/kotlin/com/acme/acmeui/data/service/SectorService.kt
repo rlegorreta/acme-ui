@@ -159,11 +159,11 @@ class SectorService(@Qualifier("authorization_code") val webClient: WebClient,
             logger.error("Error al actualizar el sector:" + (res?.body?.errors ?: ""))
             eventService.sendEvent(eventType = EventType.ERROR_EVENT,
                                     headers = res!!.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
-                                    eventName = "ERROR:BAJA_SECTOR_INDUSTRIAL", value = EventGraphqlError(res.body?.errors, mutableMapOf("sector" to sector)))
+                                    eventName = "ERROR:UPDATE_SECTOR_INDUSTRIAL", value = EventGraphqlError(res.body?.errors, mutableMapOf("sector" to sector)))
             return null
         }
         eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
-                                eventName = "BAJA_SECTOR_INDUSTRIAL", value = res.body!!.data!!.updateSector)
+                                eventName = "UPDATESECTOR_INDUSTRIAL", value = res.body!!.data!!.updateSector)
 
         return res.body!!.data!!.updateSector
     }

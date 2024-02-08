@@ -118,8 +118,8 @@ class EventService(@Qualifier("authorization_code") val webClient: WebClient,
         return res!!.data.notifications
     }
 
-    data class GraphqlResponseNotifications constructor(val data: Data) {
-        data class Data constructor(val notifications: List<Notification>)
+    data class GraphqlResponseNotifications(val data: Data) {
+        data class Data(val notifications: List<Notification>)
     }
 
 }

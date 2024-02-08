@@ -15,6 +15,7 @@ import {GridDataProviderCallback, GridDataProviderParams, GridItemModel, GridDat
 import * as endpoint from 'Frontend/generated/AcmeEndpoint';
 import dateFnsFormat from "date-fns/format";
 import dateFnsParse from "date-fns/parse";
+import {parseISO} from "date-fns";
 
 @customElement('company-view')
 export class CompanyView extends View {
@@ -105,9 +106,14 @@ export class CompanyView extends View {
     /* Converts from default date format to dd-MM-yyyy format */
     private formatDateIso8601 = (dateStr: string | undefined): string => {
         if (typeof dateStr === 'string') {
-            const date = dateFnsParse(dateStr, "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", new Date());
+            try {
+                // const date = dateFnsParse(dateStr, "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS", new Date());
+                const date = parseISO(dateStr);
 
-            return dateFnsFormat(date, 'dd-MM-yyyy HH:mm');
+                return dateFnsFormat(date, 'dd-MM-yyyy HH:mm');
+            } catch (e) {
+                return "formato inválido(*):" + dateStr;
+            }
         } else {
             return "formato inválido:" + dateStr;
         }

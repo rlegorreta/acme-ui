@@ -1,4 +1,4 @@
-/* Copyright (c) 2023, LegoSoft Soluciones, S.C.
+/* Copyright (c) 2024, LegoSoft Soluciones, S.C.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@
  *
  *  PersonaService.kt
  *
- *  Developed 2023 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
+ *  Developed 2024 by LegoSoftSoluciones, S.C. www.legosoft.com.mx
  */
 package com.acme.acmeui.data.service
 
@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.support.PageableExecutionUtils
 import org.springframework.http.MediaType
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
@@ -48,7 +49,7 @@ import java.time.format.DateTimeFormatter
  *
  * @project acme-ui
  * @author rlh
- * @date November 2023
+ * @date February 2024
  */
 @Service
 class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
@@ -56,6 +57,7 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
                       private val emailService: EmailService,
                       private val emailAsignadoService: EmailAsignadoService,
                       private val direccionService: DireccionService,
+                      private val rfcService: RfcService,
                       private val eventService: EventService,
                       private val serviceConfig: ServiceConfig): HasLogger {
     fun uri(): UriComponentsBuilder = UriComponentsBuilder.fromUriString(serviceConfig.getBupProvider())
@@ -172,6 +174,7 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
                                                  "fechaNAcimiento" to person.fechaNacimiento,
                                                  "genero" to person.genero,
                                                  "estadoCivil" to person.estadoCivil,
+                                                 "curp" to person.curp,
                                                  "usuarioModificacion" to person.usuarioModificacion!!,
                                                  "fechaModificacion" to person.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME),
                                                  "activo" to person.activo,
@@ -198,6 +201,17 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
         eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
                                eventName = "ALTA_PERSONA", value = newPerson)
         // Now check relationships to be added
+        // Rfc 1:1
+        if (person.rfc.rfc != null)
+            try {
+                val newRfc = rfcService.addRfcIfNotExists(person.rfc)
+
+                if (newRfc != null)
+                    addPersonRfc(res.body!!.data!!.createPersona.idNeo4j!!, newRfc.idNeo4j!!)
+            } catch (e : Exception) {
+                logger.error("No se pudo dar de alta el rfc para la persona ${person.idPersona}: ${e.message}")
+                return null
+            }
         // Check telephones 1:m
         if (person.telefonos != null && person.telefonos!!.isNotEmpty())
             try {
@@ -271,6 +285,7 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
                                                                     "fechaNacimiento" to person.fechaNacimiento,
                                                                     "genero" to person.genero,
                                                                     "estadoCivil" to person.estadoCivil,
+                                                                    "curp" to person.curp,
                                                                     "usuarioModificacion" to person.usuarioModificacion!!,
                                                                     "fechaModificacion" to person.fechaModificacion!!.format(DateTimeFormatter.ISO_DATE_TIME),
                                                                     "activo" to person.activo,
@@ -292,6 +307,24 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
             return null
         }
 
+        // Check PersonRfc relationship
+        if (!((oldPerson.rfc.rfc != null) && (person.rfc.rfc != null) &&
+                    (oldPerson.rfc.idNeo4j == person.rfc.idNeo4j)))
+            try {
+                if (oldPerson.rfc.rfc != null) {
+                    deletePersonaRfc(oldPerson.idNeo4j!!, oldPerson.rfc.idNeo4j!!)
+                    rfcService.deleteRfcIfNotNeeded(oldPerson.rfc.idNeo4j!!)
+                }
+                if (person.rfc.rfc != null) {
+                    val newRfc = rfcService.addRfcIfNotExists(person.rfc)
+
+                    if (newRfc != null)
+                        addPersonRfc(person.idNeo4j!!, newRfc.idNeo4j!!)
+                }
+            } catch (e: Exception) {
+                logger.error("No se pudo actualizar la relación con el rfc. ")
+                return null
+            }
         // Check PersonTelefono relationship
         if (oldPerson.telefonos != null && oldPerson.telefonos!!.isNotEmpty())
             try {
@@ -417,6 +450,67 @@ class PersonaService (@Qualifier("authorization_code") val webClient: WebClient,
                                eventName = "ACTUALIZA_PERSONA", value = res.body!!.data!!.updatePersona)
 
         return res.body!!.data!!.updatePersona
+    }
+
+    /**
+     * Company rfc relationship maintenance
+     */
+    private fun addPersonRfc(idPerson: String, idRfc: String): Persona {
+        val graphQLRequestBody = GraphqlRequestBody(GraphqlSchemaReaderUtil.getSchemaFromFileName("addPersonRfc"),
+                                                        mutableMapOf("id" to idPerson,
+                                                            "rfc" to idRfc))
+        val res = webClient.post()
+                            .uri(uri().path("/bup/graphql").build().toUri())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(graphQLRequestBody), GraphqlRequestBody::class.java)
+                            .attributes(ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId(serviceConfig.securityClientId + "-oidc"))
+                            .retrieve()
+                            .toEntity(GraphqlResponseAddPersonaRfc::class.java)
+                            .block()
+
+        if ((res == null) || (res.body!!.errors != null)) {
+            logger.error("Error al añadir la relación persona rfc:" + (res?.body?.errors ?: ""))
+            val graphQLError = EventGraphqlError(res?.body?.errors, mutableMapOf("idPerson" to idPerson))
+
+            graphQLError.addExtraData("idRfc", idRfc)
+            eventService.sendEvent(eventType = EventType.ERROR_EVENT,
+                headers = res!!.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+                eventName = "ERROR:ASIGNACION_RFC_PERSONA", value = graphQLError)
+            throw Exception("Error al añadir la relación persona rfc")
+        }
+        eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+            eventName = "ASIGNACION_RFC_PERSONA", value = res.body!!.data!!.addPersonaRfc)
+
+        return res.body!!.data!!.addPersonaRfc
+    }
+
+    private fun deletePersonaRfc(idPerson: String, idRfc: String): Persona {
+        val graphQLRequestBody = GraphqlRequestBody(GraphqlSchemaReaderUtil.getSchemaFromFileName("deletePersonRfc"),
+                                                        mutableMapOf("id" to idPerson,
+                                                            "rfc" to idRfc))
+        val res = webClient.post()
+                            .uri(uri().path("/bup/graphql").build().toUri())
+                            .accept(MediaType.APPLICATION_JSON)
+                            .body(Mono.just(graphQLRequestBody), GraphqlRequestBody::class.java)
+                            .attributes(ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId(serviceConfig.securityClientId + "-oidc"))
+                            .retrieve()
+                            .toEntity(GraphqlResponseDeletePersonaRfc::class.java)
+                            .block()
+
+        if ((res == null) || (res.body!!.errors != null)) {
+            logger.error("Error borrar la relación rfc persona:" + (res?.body?.errors ?: ""))
+            val graphQLError = EventGraphqlError(res?.body?.errors, mutableMapOf("idPerson" to idPerson))
+
+            graphQLError.addExtraData("idRfc", idRfc)
+            eventService.sendEvent(eventType = EventType.ERROR_EVENT,
+                headers = res!!.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+                eventName = "ERROR:DES_ASIGNACION_RFC_PERSONA", value = graphQLError)
+            throw Exception("Error al borrar la relación persona rfc")
+        }
+        eventService.sendEvent(headers = res.headers, userName = SecurityContextHolder.getContext().authentication!!.name,
+            eventName = "DES_ASIGNACION_RFC_PERSONA", value = res.body!!.data!!.deletePersonaRfc)
+
+        return res.body!!.data!!.deletePersonaRfc
     }
 
 }

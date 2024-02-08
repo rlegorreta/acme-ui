@@ -1,0 +1,9 @@
+mutation upRfc($id: ID!,
+               $rfc: String!) {
+    updateRfc (_id: $id,
+        rfc: $rfc) {
+        _id
+        nombre
+        rfc
+    }
+}

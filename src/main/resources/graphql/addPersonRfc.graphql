@@ -1,0 +1,9 @@
+mutation($id: ID!, $rfc:ID!) {
+    addPersonaRfc(_id:$id, rfc:$rfc) {
+        _id
+        nombre
+        apellidoPaterno
+        apellidoMaterno
+        curp
+    }
+}

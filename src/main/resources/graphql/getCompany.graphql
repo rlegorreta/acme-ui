@@ -4,6 +4,9 @@ query getCompany($id:ID, $nombre: String) {
     nombre
     usuarioModificacion
     fechaModificacion
+    padre
+    activo
+    idPersona
     sector {
       _id
       nombre

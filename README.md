@@ -332,7 +332,7 @@ Then change to the docker-compose directory
 
 ```bash
 cd docker-platform-ui
-docker-compose up
+docker-compose up -d
 ```
 
 And to run the UI inside the docker:

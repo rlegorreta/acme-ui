@@ -4,10 +4,17 @@ query allCompanies($nombre: String, $limit: Int, $skip: Int) {
             nombre
             usuarioModificacion
             fechaModificacion
+            padre
+            activo
+            idPersona
             sector {
                     _id
                     nombre
                     }
+            rfc {
+                _id
+                rfc
+            }
             areas {
                     _id
                     nombre

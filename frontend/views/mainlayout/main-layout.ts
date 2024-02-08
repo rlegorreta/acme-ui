@@ -43,7 +43,7 @@ import '../../views/chat/chat-view';
 /**
  * Main layout for all It's and flow views. Is was taken from Vaadin source examples
  *
- * @project SYS-UI
+ * @project acme-ui-UI
  * @author rlh
  * @date February 2023
  */

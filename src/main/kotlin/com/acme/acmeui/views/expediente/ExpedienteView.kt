@@ -48,7 +48,7 @@ import org.apache.chemistry.opencmis.commons.PropertyIds
 import jakarta.annotation.security.RolesAllowed
 
 /**
- * This view shows per folder all documents and canview the in a subview.
+ * This view shows per folder all documents and can view the in a subview.
  *
  * @project acme-ui
  * @author rlh

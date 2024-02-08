@@ -1,0 +1,16 @@
+query getRfc($id:ID, $rfc: String) {
+    rfcs(_id:$id, rfc: $rfc) {
+        _id
+        rfc
+        companias {
+            _id
+            nombre
+        }
+        personas {
+            _id
+            nombre
+            apellidoPaterno
+            apellidoMaterno
+        }
+    }
+}

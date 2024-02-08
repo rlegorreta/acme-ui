@@ -27,7 +27,7 @@ import jakarta.validation.constraints.*
 /**
  * User info class to be sent to the Client browser.
  *
- * note: This is NOT the UserInfo class from lmass.client.security since this information is just
+ * note: This is NOT the UserInfo class from ailegorreta.client.security since this information is just
  *       to get the login name and the authorities.
  *       If we want to read the User information use the AuthServerUserLookupService
  *

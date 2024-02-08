@@ -48,8 +48,7 @@ import reactor.core.publisher.Mono
 @Service
 class DirigeService (@Qualifier("authorization_code") val webClient: WebClient,
                      private val eventService: EventService,
-                     private val serviceConfig: ServiceConfig
-): HasLogger {
+                     private val serviceConfig: ServiceConfig): HasLogger {
 
     fun uri(): UriComponentsBuilder = UriComponentsBuilder.fromUriString(serviceConfig.getBupProvider())
 

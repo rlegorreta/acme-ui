@@ -33,7 +33,6 @@ import EstadoCivilType from "Frontend/generated/com/acme/acmeui/data/dto/EstadoC
 import TelefonoType from "Frontend/generated/com/acme/acmeui/data/dto/TelefonoType";
 import DireccionType from "Frontend/generated/com/acme/acmeui/data/dto/DireccionType";
 import {EmailField} from "@vaadin/email-field";
-import {companyViewStore} from "Frontend/views/company/company-view-store";
 
 @customElement('person-form')
 export class PersonForm extends View {
@@ -111,6 +110,24 @@ export class PersonForm extends View {
                 return { property: model.apellidoPaterno };
             },
         });
+        this.binder.for(model.rfc.rfc).addValidator({
+            message: 'El RFC deb tener 13 caracteres',
+            validate: (rfc: string) => {
+                if (rfc.length === 13) {
+                    return true;
+                }
+                return { property: model.rfc.rfc };
+            },
+        });
+        this.binder.for(model.curp).addValidator({
+            message: 'El CURP deb tener 16 caracteres',
+            validate: (curp: string) => {
+                if (curp.length === 16) {
+                    return true;
+                }
+                return { property: model.curp };
+            },
+        });
 
         return html`
               <vaadin-horizontal-layout class="gap-x-s">
@@ -147,6 +164,16 @@ export class PersonForm extends View {
                           .items=${this.estadoCivilTypes}
                           ...=${field(model.estadoCivil)}
                   ></vaadin-combo-box>
+                  <vaadin-text-field
+                          label="RFC"
+                          ?disabled=${uiStore.offline}
+                          ...=${field(model.rfc.rfc)}
+                  ></vaadin-text-field>
+                  <vaadin-text-field
+                          label="CURP"
+                          ?disabled=${uiStore.offline}
+                          ...=${field(model.curp)}
+                  ></vaadin-text-field>
               </vaadin-horizontal-layout>
               <vaadin-horizontal-layout class="gap-x-s">
                   <vaadin-date-picker
@@ -161,7 +188,7 @@ export class PersonForm extends View {
                           ?disabled=${uiStore.offline}
                           ...=${field(model.idPersona)}
                           pattern="^\\d{6}$"
-                          help-text='Identificador para LDAP y otras aplicaciones (opcional).'
+                          help-text='Identificador para LDAP y otras aplicaciones.'
                   ></vaadin-text-field>
               </vaadin-horizontal-layout>
               <vaadin-checkbox

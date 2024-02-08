@@ -5,6 +5,7 @@ mutation upPersona($id: ID!,
                    $fechaNacimiento: LocalDate,
                    $genero: String,
                    $estadoCivil: String,
+                   $curp: String!,
                    $usuarioModificacion: String!
                    $fechaModificacion: LocalDateTime!
                    $activo: Boolean!,
@@ -16,6 +17,7 @@ mutation upPersona($id: ID!,
                  fechaNacimiento: $fechaNacimiento,
                  genero: $genero,
                  estadoCivil: $estadoCivil,
+                 curp: $curp,
                  usuarioModificacion:$usuarioModificacion,
                  fechaModificacion:$fechaModificacion,
                  activo: $activo,
@@ -27,6 +29,7 @@ mutation upPersona($id: ID!,
             fechaNacimiento
             genero
             estadoCivil
+            curp
             usuarioModificacion
             fechaModificacion
             activo

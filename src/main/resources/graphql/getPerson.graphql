@@ -7,6 +7,11 @@ query getPerson($id:ID, $nombre: String, $apellidoPaterno: String, $apellidoMate
             fechaNacimiento
             genero
             estadoCivil
+            curp
+            rfc {
+                _id
+                rfc
+            }
             usuarioModificacion
             fechaModificacion
             activo

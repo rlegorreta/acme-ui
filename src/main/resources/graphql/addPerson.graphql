@@ -4,9 +4,10 @@ mutation newPersonas($nombre: String!,
                      $fechaNacimiento: LocalDate,
                      $genero: String!,
                      $estadoCivil: String!,
+                     $curp: String!,
                      $usuarioModificacion: String
                      $fechaModificacion: LocalDateTime,
-                     $activo: Boolean!
+                     $activo: Boolean!,
                      $idPersona: Int) {
     createPersona (nombre: $nombre,
                    apellidoPaterno: $apellidoPaterno,
@@ -14,6 +15,7 @@ mutation newPersonas($nombre: String!,
                    fechaNacimiento: $fechaNacimiento,
                    genero: $genero,
                    estadoCivil: $estadoCivil,
+                   curp: $curp,
                    usuarioModificacion:$usuarioModificacion,
                    fechaModificacion:$fechaModificacion,
                    activo: $activo,
@@ -25,6 +27,7 @@ mutation newPersonas($nombre: String!,
         fechaNacimiento
         genero
         estadoCivil
+        curp
         usuarioModificacion
         fechaModificacion
         activo

@@ -31,4 +31,4 @@ See the `FlowUI.kt` (if exists) class as an example.
 Following this approach, when we need to upgrade for some reason en JS in the visjs-network library or in the
 `third-party-org-vaadin-addon-visjs-network` JS script code, we need first to generate the JS files int the
 project (i.e., Hilla generate gradle task) and after that we need to COPY the generated JS script files
-to the sys-ui project directory `resource/META-INF/frontend/built`.
+to the acme-ui project directory `resource/META-INF/frontend/built`.

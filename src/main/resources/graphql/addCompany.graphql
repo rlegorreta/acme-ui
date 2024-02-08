@@ -1,12 +1,21 @@
 mutation newCompania($nombre: String!,
-                     $usuarioModificacion: String!
-                     $fechaModificacion: LocalDateTime!) {
+                     $usuarioModificacion: String!,
+                     $fechaModificacion: LocalDateTime!,
+                     $padre: Boolean!,
+                     $activo: Boolean!,
+                     idPersona: Int!) {
     createCompania (nombre: $nombre,
                     usuarioModificacion:$usuarioModificacion,
-                    fechaModificacion:$fechaModificacion) {
+                    fechaModificacion:$fechaModificacion,
+                    padre:$padre,
+                    activo:$activo,
+                    idPersona:$idPresona) {
         _id
         nombre
         usuarioModificacion
         fechaModificacion
+        padre
+        activo
+        idPersona
 	}
 }

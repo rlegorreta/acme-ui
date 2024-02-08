@@ -47,8 +47,8 @@ import java.io.InputStream
 /**
  * Component to display different types of Documents in the different BPM views
  *
- * An extra functionality exists: is the document postfix is PREVIO and the document typs is an HTML then using
- * the CKEditor we can save a new new version or the final version.
+ * An extra functionality exists: is the document postfix is PREVIO and the document types is an HTML then using
+ * the CKEditor we can save a new version or the final version.
  *
  * @project acme-ui
  * @author rlh

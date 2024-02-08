@@ -1,0 +1,6 @@
+mutation newRfc($rfc: String!) {
+    createRfc (rfc: $rfc) {
+        _id
+        rfc
+    }
+}
